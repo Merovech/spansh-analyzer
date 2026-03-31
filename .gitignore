@@ -1,0 +1,9 @@
+# Auto-generated folders
+__pycache__
+.claude
+lib
+nuget_restore/obj
+nuget_restore/bin
+
+# Extra files that shouldn't be distributed by default
+.warnignore
