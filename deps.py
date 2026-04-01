@@ -9,8 +9,8 @@ def download_dependencies() -> None:
     """
     Downloads Elite.SpanshTools via dotnet publish and places the DLLs in ./lib/.
     """
-    # Build the lib folder location as well as the csproj for the nuget package
-    root = Path(__file__).parent
+    # Capture the lib folder location as well as the csproj name for the nuget package so they can be retrieved
+    root = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
     csproj = root / "nuget_restore" / "restore.csproj"
     libfolder = root / "lib"
 
@@ -20,7 +20,7 @@ def download_dependencies() -> None:
         sys.exit(1)
 
     # Restore the package
-    print("Restoring NuGet packages via dotnet publish …")
+    log.writeln("Restoring NuGet packages via dotnet publish...")
     result = subprocess.run(
         [
             "dotnet", "publish",
@@ -39,7 +39,7 @@ def download_dependencies() -> None:
         log.writeln(result.stderr)
         sys.exit(result.returncode)
 
-    print(f"DLLs written to {libfolder}")
+    log.writeln(f"DLLs written to {libfolder}")
     dlls = sorted(libfolder.glob("*.dll"))
     for dll in dlls:
         log.writeln(f"  {dll.name}")

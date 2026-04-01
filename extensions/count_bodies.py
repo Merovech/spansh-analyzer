@@ -8,27 +8,29 @@ Four methods need to be implemented:
     ProcessSystem(): Processes a system that is passed form the main loop
     Completed(): Run when the main loop is complete to output results
     
-See processorBase.py for details.
+See processor_base.py for details.
 
 `system` passed to ProcessSystem is an Elite.SpanshTools.Model.StarSystem
 instance. Access any property directly — pythonnet maps .NET properties to
 Python attributes.
 """
-from pathlib import Path
-from processorBase import ProcessorBase
+from processor_base import ProcessorBase
+import log
 
-class ExampleCalculator(ProcessorBase):
+class BodyCounter(ProcessorBase):
     def __init__(self):
+        super().__init__()
         self.__body_count = 0
 
     def GetName(self) -> str:
-        return "Example Calculator"
+        return "Body Counter Example"
 
-    def Initialize(self) -> None:
+    def Initialize(self, log_verbose: bool = False) -> None:
+        super().Initialize(log_verbose)
         self.__body_count = 0
 
     def ProcessSystem(self, system) -> None:
         self.__body_count += system.BodyCount
 
     def Completed(self) -> None:
-        print(f"Total bodies found: {self.__body_count}")
+        log.writeln(f"Total bodies found: {self.__body_count}")

@@ -1,9 +1,15 @@
-# Auto-generated folders
+## Auto-generated folders
 __pycache__
 .claude
-lib
+build
 nuget_restore/obj
 nuget_restore/bin
+# Populated on first run with latest
+lib
 
-# Extra files that shouldn't be distributed by default
-.warnignore
+## Extra files that shouldn't be distributed by default
+# Optional file created by users to silence a warning message
+.warnignore 
+# logs from test runs
+*log-*.txt
+*.sln

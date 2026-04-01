@@ -17,7 +17,7 @@ import time
 
 # Project imports
 import deps
-import processorLoader
+import processor_loader
 import log
 import args as cli
 from args import AppArgs
@@ -38,10 +38,11 @@ import clr  # noqa: E402  (must come after pythonnet.load)
 # Setup
 # ---------------------------------------------------------------------------
 # Load the Elite.SpanshTools assembly from ./lib/
-LIB_DIR = Path(__file__).parent / "lib"
+_BASE_DIR = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
+LIB_DIR = _BASE_DIR / "lib"
 
 if not LIB_DIR.exists():
-    print("./lib/ directory not found. Downloading dependencies.")
+    log.writeln("[WARN] ./lib/ directory not found. Downloading dependencies.")
     deps.download_dependencies()
 
 sys.path.insert(0, str(LIB_DIR))
@@ -69,28 +70,32 @@ def process_file(app_args: AppArgs) -> None:
         Parsed command-line arguments.
     """
 
-    log.verbose_writeln(f"Args:", log.Fore.CYAN)
+    log.verbose_writeln("Args:", log.Fore.CYAN)
     log.verbose_writeln(f"  input_file      : {app_args.input_file}")
     log.verbose_writeln(f"  verbose         : {app_args.verbose}")
     log.verbose_writeln(f"  console_interval: {app_args.console_interval}\n")
 
     start = time.monotonic()
-    extensions_dir = Path(__file__).parent / "extensions"
+    extensions_dir = _BASE_DIR / "extensions"
 
     log.writeln("Loading processors...")
-    processors = processorLoader.load_processors(extensions_dir)
+    processors = processor_loader.load_processors(extensions_dir)
     if not processors:
         log.writeln("No processors found - nothing to do.")
         return
 
     log.writeln("")
 
+    log.writeln("Initializing all processors...")
+    for processor in processors:
+        processor.Initialize(app_args.verbose)
+    
     parser = GalaxyParser()
     async_enumerable = parser.ParseFileAsync(app_args.input_file)
     enumerator = async_enumerable.GetAsyncEnumerator()
     count = 0
     errors = 0
-    log.write("Processing.  Systems Processed: 0")
+    log.write("Processing... 0")
     try:
         # MoveNextAsync() returns ValueTask<bool>. Calling .Result directly on a
         # ValueTask is only valid if it completed synchronously; for file I/O it
@@ -107,10 +112,10 @@ def process_file(app_args: AppArgs) -> None:
                     processor.ProcessSystem(system)
                 except Exception as exc:
                     errors += 1
-                    calc_name = Path(processor.__file__).name
+                    calc_name = processor.GetName()
                     log.writeln(f"[ERROR] {calc_name} / {system.Name}: {exc}")
-            if (count % app_args.console_interval == 0):
-                log.write(f"Processing.  Systems Processed: {count}")
+            if count % app_args.console_interval == 0:
+                log.write(f"Processing... {count}")
     finally:
         enumerator.DisposeAsync().AsTask().GetAwaiter().GetResult()
 
