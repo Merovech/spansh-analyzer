@@ -2,6 +2,7 @@
 __pycache__
 .claude
 build
+dist
 nuget_restore/obj
 nuget_restore/bin
 # Populated on first run with latest
