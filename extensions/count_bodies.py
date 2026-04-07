@@ -5,7 +5,7 @@ systems.
 Four methods need to be implemented:
     GetName(): returns the display name of the processor
     Initialize(): Intializes the processor however it needs
-    ProcessSystem(): Processes a system that is passed form the main loop
+    ProcessSystem(): Processes a system that is passed from the main loop
     Completed(): Run when the main loop is complete to output results
     
 See processor_base.py for details.

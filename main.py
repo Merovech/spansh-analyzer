@@ -88,6 +88,7 @@ def process_file(app_args: AppArgs) -> None:
 
     log.writeln("Initializing all processors...")
     for processor in processors:
+        log.writeln(f"{processor.GetName()}")
         processor.Initialize(app_args.verbose)
     
     parser = GalaxyParser()
@@ -124,7 +125,7 @@ def process_file(app_args: AppArgs) -> None:
     mm, ss = divmod(remainder, 60)
     elapsed_str = f"{hh:02d}:{mm:02d}:{ss:02d}"
 
-    log.writeln("Done.")
+    log.writeln("Processing complete.")
     log.writeln("\nProcess statistics:\n-------------------", log.Fore.CYAN)
     log.writeln(f"  Processed: {count}")
     log.writeln(f"  Errors   : {0 if not errors else errors}")
