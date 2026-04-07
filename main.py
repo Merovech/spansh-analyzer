@@ -88,8 +88,10 @@ def process_file(app_args: AppArgs) -> None:
 
     log.writeln("Initializing all processors...")
     for processor in processors:
-        log.writeln(f"{processor.GetName()}")
+        log.writeln(f"  [OK] {processor.GetName()}")
         processor.Initialize(app_args.verbose)
+    
+    log.writeln("")
     
     parser = GalaxyParser()
     async_enumerable = parser.ParseFileAsync(app_args.input_file)

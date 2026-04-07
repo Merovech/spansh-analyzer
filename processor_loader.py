@@ -47,7 +47,7 @@ def load_processors(extensions_dir: Path) -> list[ProcessorBase]:
             continue
 
         processors.append(processor)
-        log.writeln(f"  [OK]   {path.name} ({processor.GetName()})")
+        log.writeln(f"  [OK] {path.name} ({processor.GetName()})")
 
     return processors
 
